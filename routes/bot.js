@@ -49,8 +49,8 @@ function fetchRedisPost() {
 function generateTemplate(post) {
 	return new Promise((resolve, reject) => {
 		resolve({
-			gradient_one : '#ffc3a0',
-			gradient_two :  ' #FFAFBD',
+			gradient_one : '#283c86',
+			gradient_two :  '#45a247',
 			post : post
 		});
 	});
