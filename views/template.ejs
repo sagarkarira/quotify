@@ -1,0 +1,45 @@
+<!-- views/pages/template.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<style>
+
+body {
+ 	background: #FFAFBD;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to left, <%=gradient_one%>, <%=gradient_two%>);  /* Chrome 10-25, Safari 5.1-6 */
+  	background: linear-gradient(to left, <%=gradient_one%>, <%=gradient_two%>); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.logo {
+	width:100%;
+	text-align:center;
+}
+
+.quote{
+    text-align: right;
+    font-size: 40px;
+    font-weight: 900;
+    width: 100%;
+}
+
+
+</style>
+<body>
+	<div class="box">
+		<div class="logo">
+		  	<a href="https://imgbb.com/" ><img src="https://image.ibb.co/hGa9MQ/12081231_963676597026462_1721319417_a.png" alt="12081231 963676597026462 1721319417 a" border="0" style="width: 12%;" /></a>
+		</div>
+
+		<div class="quote">
+			<div style="width: 55%;margin: 6% auto">
+			<%=post%>
+				<br>
+			</div>
+			<span style="color: #881428"></span>
+		</div>
+	</div>
+</body>
+</html>
