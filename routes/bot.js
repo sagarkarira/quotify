@@ -4,14 +4,38 @@ const Promise = require('bluebird');
 const co = require('co');
 const Pageres = require('pageres');
 const webshot = require('webshot');
+const config = require('config');
+
+const gradientCollection = require('../utils/gradient.json');
 
 
-exports.page = (req, res) => {
+exports.list = (req, res) => {
+
+	fetchRedditPostInternal('ShowerThoughts', 'day')
+		.then((postArr)=>{
+			let posts = postArr.map((post, i)=>{
+				return i + '.' + post;
+			});
+			res.send({
+				status : 200, 
+				data : posts
+			});
+		})
+		.catch((err)=>{
+		res.send({
+			status : 100, 
+			error : err
+		})
+	});
+
+}
+
+exports.convert = (req, res) => {
+	
+	let number = req.params.number;
 	let coWrap = co.wrap(function *gen() {
-		let post = yield fetchRedisPost();
-		let elements = yield generateTemplate(post)
-
-		;
+		let postArr = yield fetchRedditPostInternal('ShowerThoughts', 'day');
+		let elements = yield generateTemplate(postArr[number]);
 		console.log(elements);
 		return elements;
 	});
@@ -26,31 +50,35 @@ exports.page = (req, res) => {
 }
 
 
-function fetchRedisPost() {
-	return new Promise((resolve, reject)=>{
-		const r = new snoowrap({
-		  	userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.138 Safari/537.36 Vivaldi/1.8.770.54',
-		  	clientId: 'eYKmBBX7YNrQ8g',
-		  	clientSecret: 'z18PfnESHscIEN1UAvX3Z5_BlhI',
-		  	refreshToken: '44344098-Kjt3tPuzKR3TWNImtwqV_b55L54'
-		});
 
+function fetchRedditPostInternal(subReddit, time) {
+	return new Promise((resolve, reject) => {
+		const r = new snoowrap({
+		  	"userAgent" : config.get('redditConfig').userAgent,
+		 	"clientId" : config.get('redditConfig').clientId,
+			 "clientSecret" : config.get('redditConfig').clientSecret,
+		 	"refreshToken" : config.get('redditConfig').refreshToken
+		});
 		let postArr = [];
-		r.getSubreddit('ShowerThoughts').getTop({time: 'day'}).then((dataArr)=>{
+		r.getSubreddit(subReddit).getTop({time: time}).then((dataArr)=>{
 			postArr = dataArr.map((obj)=>{
 				console.log(obj.title);
 				return obj.title;
 			});
-			resolve(postArr[0]);
+			resolve(postArr);
 		});
-	});
+	})
 }
 
 function generateTemplate(post) {
 	return new Promise((resolve, reject) => {
+		
+		let gradientOne = gradientCollection[0]['colors'][0];
+		let gradientTwo = gradientCollection[0]['colors'][1];
+
 		resolve({
-			gradient_one : '#283c86',
-			gradient_two :  '#45a247',
+			gradient_one : gradientOne,
+			gradient_two :  gradientTwo,
 			post : post
 		});
 	});
@@ -59,9 +87,15 @@ function generateTemplate(post) {
 
 exports.screenshot = (req, res) => {
 	
+	let number = req.params.number || 1;
 	let directory = __dirname + '/../public/';
-	const pageres = new Pageres({delay: 2})
-						.src('http://localhost:8080/api/page', ['1280x1024'])
+	let options = {
+		delay: 2, 
+		filename : 'st-<%= date %>-<%= size %>'
+	} 
+	
+	const pageres = new Pageres(options)
+						.src(`http://localhost:8080/api/convert/${number}`, ['1280x1024'])
 						.dest(directory)
 						.run()
 						.then(() => res.send('Saved to ' + directory));
@@ -73,5 +107,5 @@ exports.screenshot = (req, res) => {
 	//   	}
 	//   	res.send('saved');
 	// });
-}
+}	
 

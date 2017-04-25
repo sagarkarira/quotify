@@ -1,3 +1,9 @@
 {
-	"PORT" : 8080
+	"PORT" : 8080, 
+	"redditConfig" : {
+		"userAgent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.138 Safari/537.36 Vivaldi/1.8.770.54",
+		 "clientId" : "eYKmBBX7YNrQ8g",
+		 "clientSecret" : "z18PfnESHscIEN1UAvX3Z5_BlhI",
+		 "refreshToken" : "44344098-Kjt3tPuzKR3TWNImtwqV_b55L54"
+	}
 }

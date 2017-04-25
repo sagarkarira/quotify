@@ -15,15 +15,16 @@ const colors = require('colors');
 const bot = require('./routes/bot');
 
 const app = express();
-app.set('port', process.env.PORT || 8080);
+app.set('port', config.get('PORT') || 8080);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use('/static', express.static(__dirname + '/public'));
 
-app.get('/api/page', bot.page);
-app.get('/api/screenshot', bot.screenshot);
+app.get('/api/list', bot.list);
+app.get('/api/convert/:number', bot.convert);
+app.get('/api/screenshot/:number', bot.screenshot);
 
 
 app.listen(app.get('port'), () => {
