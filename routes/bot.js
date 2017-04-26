@@ -93,7 +93,7 @@ exports.screenshot = (req, res) => {
 	}
 
 	const pageres = new Pageres(options)
-						.src(`http://localhost:8080/api/convert/${number}`, ['1280x1024'])
+						.src(`http://localhost:8080/api/convert/${number}`, ['800x800'])
 						.dest(directory)
 						.run()
 						.then(() => res.send('Saved to ' + directory));
