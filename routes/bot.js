@@ -5,9 +5,7 @@ const co = require('co');
 const Pageres = require('pageres');
 const webshot = require('webshot');
 const config = require('config');
-
-const gradientCollection = require('../utils/gradient.json');
-
+const randomGradient = require('../utils/helpers');
 
 exports.list = (req, res) => {
 
@@ -17,13 +15,13 @@ exports.list = (req, res) => {
 				return i + '.' + post;
 			});
 			res.send({
-				status : 200, 
+				status : 200,
 				data : posts
 			});
 		})
 		.catch((err)=>{
 		res.send({
-			status : 100, 
+			status : 100,
 			error : err
 		})
 	});
@@ -31,7 +29,7 @@ exports.list = (req, res) => {
 }
 
 exports.convert = (req, res) => {
-	
+
 	let number = req.params.number;
 	let coWrap = co.wrap(function *gen() {
 		let postArr = yield fetchRedditPostInternal('ShowerThoughts', 'day');
@@ -72,9 +70,9 @@ function fetchRedditPostInternal(subReddit, time) {
 
 function generateTemplate(post) {
 	return new Promise((resolve, reject) => {
-		
-		let gradientOne = gradientCollection[0]['colors'][0];
-		let gradientTwo = gradientCollection[0]['colors'][1];
+		const gradientCollection = randomGradient();
+		let gradientOne = gradientCollection['colors'][0];
+		let gradientTwo = gradientCollection['colors'][1];
 
 		resolve({
 			gradient_one : gradientOne,
@@ -86,16 +84,16 @@ function generateTemplate(post) {
 
 
 exports.screenshot = (req, res) => {
-	
+
 	let number = req.params.number || 1;
 	let directory = __dirname + '/../public/';
 	let options = {
-		delay: 2, 
+		delay: 2,
 		filename : 'st-<%= date %>-<%= size %>'
-	} 
-	
+	}
+
 	const pageres = new Pageres(options)
-						.src(`http://localhost:8080/api/convert/${number}`, ['1280x1024'])
+						.src(`http://localhost:8080/api/convert/${number}`, ['800x800'])
 						.dest(directory)
 						.run()
 						.then(() => res.send('Saved to ' + directory));
@@ -107,5 +105,4 @@ exports.screenshot = (req, res) => {
 	//   	}
 	//   	res.send('saved');
 	// });
-}	
-
+}
